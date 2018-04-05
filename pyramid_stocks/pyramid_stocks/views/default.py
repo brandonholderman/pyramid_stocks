@@ -7,5 +7,25 @@ from ..models import MyModel
 
 
 @view_config(route_name='index', renderer='../templates/index.jinja2')
-def my_view(request):
+def index_view(request):
+    return {}
+
+
+@view_config(route_name='auth', renderer='../templates/auth.jinja2')
+def auth_view(request):
+    return {}
+
+
+@view_config(route_name='portfolio', renderer='../templates/portfolio.jinja2')
+def portfolio_view(request):
+    return {}
+
+
+@view_config(route_name='add', renderer='../templates/add.jinja2')
+def add_view(request):
+    return {}
+
+
+@view_config(route_name='detail', renderer='../templates/detail.jinja2')
+def detail_view(request):
     return {}

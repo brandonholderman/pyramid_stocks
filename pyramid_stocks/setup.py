@@ -29,7 +29,7 @@ tests_require = [
 
 setup(
     name='pyramid_stocks',
-    version='0.0',
+    version='0.0.0',
     description='pyramid_stocks',
     long_description=README + '\n\n' + CHANGES,
     classifiers=[
@@ -38,9 +38,9 @@ setup(
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
     ],
-    author='',
-    author_email='',
-    url='',
+    author='Brandon Holderman',
+    author_email='bhold6160@gmail.com',
+    url='https://github.com/bhold6160',
     keywords='web pyramid pylons',
     packages=find_packages(),
     include_package_data=True,
