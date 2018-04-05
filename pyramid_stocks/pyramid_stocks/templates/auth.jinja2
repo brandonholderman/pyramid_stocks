@@ -10,12 +10,19 @@
 <body>
     <nav>
         <a href="index.jinja2">Home</a>
-        <a href="register.jinja2">Register</a>
-        <a href="login.jinja2">Login</a>
+        <a href="auth.jinja2">Login</a>
         <a href="portfolio.jinja2">Portfolio</a>
         <a href="stock-add.jinja2">Add Stock</a>
         <a href="stock-detail.jinja2">Detail</a>
     </nav>
+        <h2 id="login">Login</h2>
+        <form id="form_id" method="post" name="myform" class="loginLabel">
+            <label>User Name :</label>
+            <input type="text" name="username" id="username" />
+            <label>Password :</label>
+            <input type="password" name="password" id="password" />
+            <input type="button" value="Login" id="submit" onclick="validate()" />
+        </form>
 
         <h2 id="login">Register</h2>
         <form id="form_id" method="post" name="myform" class="loginLabel">
