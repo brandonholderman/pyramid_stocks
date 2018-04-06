@@ -41,7 +41,7 @@ route_name='portfolio',
 renderer='../templates/portfolio.jinja2', 
 request_method='GET')
 def portfolio_view(request):
-    return {'portfolio' : MOCK_DATA}
+    return {'data' : MOCK_DATA,}
 
 
 @view_config(
@@ -57,4 +57,9 @@ route_name='detail',
 renderer='../templates/detail.jinja2', 
 request_method='GET')
 def detail_view(request):
-    return {}
+    symbol = request.matchdict['symbol']
+
+    for data in MOCK_DATA:
+        if data['symbol'] == symbol:
+            return {'data': data}
+    return symbol

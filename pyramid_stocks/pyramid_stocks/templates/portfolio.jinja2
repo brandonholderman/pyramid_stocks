@@ -18,13 +18,13 @@
 
     </table>-->
         <ul>
-            {% for entry in entries %}
+            {% for item in data %}
                 <li>
-                    <h3>{{entry.companyName}}</h3>
-                    <h3>{{entry.exchange}}</h3>
-                    <h3>{{entry.description}}</h3>
+                    <h3>{{item.companyName}}</h3>
+                    <h3>{{item.exchange}}</h3>
+                    <h3>{{item.description}}</h3>
                     <p>
-                        <a href="{{request.route_url('detail', id=entry.name)}}">view more</a>
+                        <a href="{{request.route_url('detail', symbol=item.symbol)}}">view more</a>
                     </p>
                 </li>
             {% endfor %}

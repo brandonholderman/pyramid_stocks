@@ -1,4 +1,5 @@
 {% extends "base.jinja2" %} 
+
 {% block content %} 
 <table id="detail-table">
     <h3>AAPL</h3>
@@ -23,4 +24,13 @@
             <td>37.1M</td>
         </tr>
     </table>
+
+    <h3>{{data.companyName}}</h3>
+    <p>({{data.website}})</p>
+    <p>{{data.industry}}</p> 
+    <p>{{data.exchange}}</p> 
+    <p>{{data.ceo}}</p> 
+    <p>{{data.issueType}}</p>
+    <p>{{data.sector}}</p>
+    <p>{{data.decsription}}</p>
 {% endblock content %}
