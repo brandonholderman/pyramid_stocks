@@ -3,6 +3,7 @@ from pyramid.view import view_config
 from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from ..sample_data import MOCK_DATA
+import requests
 
 from ..models import MyModel
 
@@ -49,8 +50,18 @@ route_name='add',
 renderer='../templates/add.jinja2', 
 request_method='GET')
 def add_view(request):
-    return {}
+    # if request.method == 'GET':
+    #     try:
+    #         symbol = request.GET['symbol']
+    #     except KeyError:
+    #         return {}
 
+    #     response = request.get(API_URL + '/stock/{}/company' .format(symbol))
+    #     data = response.json()
+    #     return {'company': company}
+    # else:
+    #     raise HTTPNotFound()
+    return {}
 
 @view_config(
 route_name='detail', 
@@ -62,4 +73,4 @@ def detail_view(request):
     for data in MOCK_DATA:
         if data['symbol'] == symbol:
             return {'data': data}
-    return symbol
+    return {}
