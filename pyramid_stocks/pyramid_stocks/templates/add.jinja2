@@ -1,30 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="styles/style.css" />
-</head>
-<body>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/auth">Login</a>
-        <a href="/portfolio">Portfolio</a>
-        <a href="/add">Add Stock</a>
-        <a href="/detail">Detail</a>
-    </nav>
+{% extends "base.jinja2" %}
     
-    <h1>Search</h1>
-    <p>Please search for ticker symbol to add to the stock to your portfolio</p>
+{% block content %}
+<p>No content</p>
+<h1>Search</h1>
+<p>Please search for ticker symbol to add to the stock to your portfolio</p>
+
+<form id="add-form">
+    <label for="ticker">Stock Ticker</label>
+    <input type="text" name="ticker">
+    <button type="submit">Search</button>
     
-    <form id="add-form">
-        <label for="ticker">Stock Ticker</label>
-        <input type="text" name="ticker">
-        <button type="submit">Search</button>
-    
-        <button type="submit">Add to Portfolio</button>
-    </form>
-</body>
-</html>
+    <button type="submit">Add to Portfolio</button>
+</form>
+{% endblock content %}

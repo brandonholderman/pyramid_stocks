@@ -1,36 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" media="screen" href="styles/style.css" />
-</head>
-<body>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/auth">Login</a>
-        <a href="/portfolio">Portfolio</a>
-        <a href="/add">Add Stock</a>
-        <a href="/detail">Detail</a>
-    </nav>
-    
-    <h1>Stock Portfolio</h1>
+{% extends "base.jinja2" %} 
+
+{% block content %}
+
     <p>A list of your current stocks</p>
     
-    <table id="portfolio-table">
+    <!--<table id="portfolio-table">
         <tr>
             <th>Stock Ticker Symbol</td>
                 <th>Price Per Share</td>
         </tr>
         <tr>
-            <td>APPL</td>
+            <td>AAPL</td>
             <td>168.39</td>
-            <td>APPL</td>
+            <td>AAPL</td>
             <td>168.39</td>
         </tr>
+
+    </table>-->
+        <ul>
+            {% for entry in entries %}
+                <li>
+                    <h3>{{entry.companyName}}</h3>
+                    <h3>{{entry.exchange}}</h3>
+                    <h3>{{entry.description}}</h3>
+                    <p>
+                        <a href="{{request.route_url('detail', id=entry.name)}}">view more</a>
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
     
-    </table>
-</body>
-</html>
+{% endblock content %}
