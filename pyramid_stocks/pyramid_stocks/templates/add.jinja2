@@ -12,4 +12,13 @@
     
     <button type="submit">Add to Portfolio</button>
 </form>
+
+    {% if err%}
+    <h3>{{err}}</h3>
+    {% endif %}
+
+    {% if company%}
+    <h3>{{company}}</h3>
+    {% endif %}
+
 {% endblock content %}

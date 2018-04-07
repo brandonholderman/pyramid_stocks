@@ -4,9 +4,11 @@ from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound
 from ..sample_data import MOCK_DATA
 import requests
+import json
 
 from ..models import MyModel
 
+API_URL = 'https://api.iextrading.com/1.0'
 
 @view_config(
 route_name='home', 
@@ -50,18 +52,20 @@ route_name='add',
 renderer='../templates/add.jinja2', 
 request_method='GET')
 def add_view(request):
-    # if request.method == 'GET':
-    #     try:
-    #         symbol = request.GET['symbol']
-    #     except KeyError:
-    #         return {}
+    if request.method == 'GET':
+        try:
+            symbol = request.GET['symbol']
+        except KeyError:
+            return {}
 
-    #     response = request.get(API_URL + '/stock/{}/company' .format(symbol))
-    #     data = response.json()
-    #     return {'company': company}
-    # else:
-    #     raise HTTPNotFound()
-    return {}
+        response = requests.get(API_URL + '/stock/{}/company'.format(symbol))
+        try:
+            data = response.json()
+            return {'company': data}
+        except json.decoder.JSONDecodeError:
+            return {'err': 'Invalid Symbol'}
+    else:
+        raise HTTPNotFound()
 
 @view_config(
 route_name='detail', 
