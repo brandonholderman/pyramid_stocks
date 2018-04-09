@@ -1,7 +1,7 @@
 from pyramid.response import Response
 from pyramid.view import view_config
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
 from ..sample_data import MOCK_DATA
 import requests
 import json
@@ -53,7 +53,7 @@ route_name='portfolio',
 renderer='../templates/portfolio.jinja2', 
 request_method='GET')
 def portfolio_view(request):
-    return {'data' : API_URL,}
+    return {'data' : MOCK_DATA}
 
 
 """
@@ -64,20 +64,43 @@ route_name='add',
 renderer='../templates/add.jinja2', 
 request_method='GET')
 def add_view(request):
-    if request.method == 'GET':
-        try:
-            symbol = request.GET['symbol']
-        except KeyError:
-            return {}
+    # if request.method == 'POST':
+    #     fields = ['symbol', 'companyName']
 
-        response = requests.get(API_URL + '/stock/{}/company'.format(symbol))
-        try:
-            data = response.json()
-            return {'company': data}
-        except json.decoder.JSONDecodeError:
-            return {'err': 'Invalid '}
-    else:
-        raise HTTPNotFound()
+    #     if not all([field in request.POST for field in fields]):
+    #         return HTTPBadRequest()
+    #     try:
+        
+    #         stock = {
+    #             "symbol": request.POST['symbol'],
+    #             "companyName": request.POST['companyName'],
+    #             "exchange": request.POST['exchange'],
+    #             "website": request.POST['website'],
+    #             "industry": request.POST['industry'],
+    #             "CEO": request.POST['CEO'],
+    #             "issueType": request.POST['issueType'],
+    #             "description": request.POST['description'],
+    #         }
+    #     except KeyError:
+    #         pass
+
+    #         MOCK_DATA.append(stock)
+    #         return HTTPFound(location=request.route_url('portfolio'))
+
+        if request.method == 'GET':
+            try:
+                symbol = request.GET['symbol']
+            except KeyError:
+                return {}
+
+            response = requests.get(API_URL + '/stock/{}/company'.format(symbol))
+            try:
+                data = response.json()
+                return {'company': data}
+            except json.decoder.JSONDecodeError:
+                return {'err': 'Invalid '}
+        else:
+            raise HTTPNotFound()
 
 """
 Directs user to the detail template

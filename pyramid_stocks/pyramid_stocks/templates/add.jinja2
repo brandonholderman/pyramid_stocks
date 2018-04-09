@@ -17,6 +17,20 @@
     <h3>{{err}}</h3>
     {% endif %}
 
+    <!--{% if company%}
+    <form action="{{request.route_url('portfolio')}}">
+        <input type="text" name="symbol" value{{company.symbol}} hidden readonly required>
+        <input type="text" name="companyName" value{{company.companyName}} hidden readonly required>
+        <input type="text" name="exchange" value{{company.exchange}} hidden readonly>
+        <input type="text" name="website" value{{company.website}} hidden readonly>
+        <input type="text" name="industry" value{{company.industry}} hidden readonly>
+        <input type="text" name="CEO" value{{company.CEO}} hidden readonly>
+        <input type="text" name="issueType" value{{company.issueType}} hidden readonly>
+        <input type="text" name="sector" value{{company.sector}} hidden readonly>
+        <input type="text" name="description" value{{company.description}} hidden readonly>
+    </form>
+    {% endif %}-->
+
     {% if company%}
     <h2>{{company.companyName}}</h2>
     <h3>{{company.exchange}}</h3>
