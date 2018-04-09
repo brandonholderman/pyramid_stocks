@@ -10,8 +10,8 @@ MOCK_DATA = [{
     "sector": "Industrials"
 },
     {
-    "symbol": "LE",
-    "companyName": "General Electric Company",
+    "symbol": "AAPL",
+    "companyName": "Apple Incorporated",
     "exchange": "New York Stock Exchange",
     "industry": "Industrial Products",
     "website": "http://www.ge.com",
@@ -21,8 +21,8 @@ MOCK_DATA = [{
     "sector": "Industrials"
 },
     {
-    "symbol": "LE",
-    "companyName": "General Electric Company",
+    "symbol": "MSFT",
+    "companyName": "Microsoft",
     "exchange": "New York Stock Exchange",
     "industry": "Industrial Products",
     "website": "http://www.ge.com",
@@ -32,8 +32,8 @@ MOCK_DATA = [{
     "sector": "Industrials"
 },
     {
-    "symbol": "LE",
-    "companyName": "General Electric Company",
+    "symbol": "TSLA",
+    "companyName": "Telsa",
     "exchange": "New York Stock Exchange",
     "industry": "Industrial Products",
     "website": "http://www.ge.com",
@@ -43,8 +43,8 @@ MOCK_DATA = [{
     "sector": "Industrials"
 },
     {
-    "symbol": "LE",
-    "companyName": "General Electric Company",
+    "symbol": "GOOG",
+    "companyName": "Google",
     "exchange": "New York Stock Exchange",
     "industry": "Industrial Products",
     "website": "http://www.ge.com",
