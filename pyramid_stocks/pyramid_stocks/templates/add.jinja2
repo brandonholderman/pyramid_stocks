@@ -18,7 +18,12 @@
     {% endif %}
 
     {% if company%}
-    <h3>{{company}}</h3>
+    <h2>{{company.companyName}}</h2>
+    <h3>{{company.exchange}}</h3>
+    <h2>{{company.industry}}</h2>
+    <h2>{{company.description}}</h2>
+    <h2>{{company.website}}</h2>
+    <h2>{{company.CEO}}</h2>
     {% endif %}
 
 {% endblock content %}
