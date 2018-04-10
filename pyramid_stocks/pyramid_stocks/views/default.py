@@ -4,12 +4,11 @@ from pyramid.response import Response
 from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
 from ..sample_data import MOCK_DATA
 from sqlalchemy.exc import DBAPIError
-from ..models import Entry
+from ..models import Stock
 from . import DB_ERROR_MSG
 import requests
 import json
 
-from ..models import MyModel
 
 API_URL = 'https://api.iextrading.com/1.0'
 
@@ -57,7 +56,7 @@ renderer='../templates/portfolio.jinja2',
 request_method='GET')
 def portfolio_view(request):
     try:
-        query = request.dbsession.query(Entry)
+        query = request.dbsession.query(Stock)
         all_entries = query.all()
     except DBAPIError:
         return DBAPIError(DB_ERROR_MSG, content_type='text/plain', status=500)
