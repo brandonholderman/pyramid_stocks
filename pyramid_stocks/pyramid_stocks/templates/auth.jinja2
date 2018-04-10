@@ -3,6 +3,7 @@
 {% block content %}
 <h2 id="login">Register</h2>
 <form id="form_id" method="POST" name="myform" class="loginLabel" action="{{request.route_url('auth')}}">
+    <input type="hidden" name="csrf_token" value="{{request.session.get_csrf_token()}}">
     <label>User Name :</label>
     <input type="text" name="username" id="username" />
     <label>E-mail :</label>
@@ -14,6 +15,7 @@
 
 <h2 id="login">Login</h2>
 <form id="form_id" method="GET" name="myform" class="loginLabel" action="{{request.route_url('auth')}}">
+    <input type="hidden" name="csrf_token" value="{{request.session.get_csrf_token()}}">
     <label>User Name :</label>
     <input type="text" name="username" id="username" />
     <label>Password :</label>

@@ -6,6 +6,7 @@
 <p>Please search for ticker symbol to add to the stock to your portfolio</p>
 
 <form id="add-form">
+    <input type="hidden" name="csrf_token" value="{{request.session.get_csrf_token()}}">
     <label for="ticker">Stock Ticker</label>
     <input type="text" name="symbol">
     <button type="submit">Search</button>

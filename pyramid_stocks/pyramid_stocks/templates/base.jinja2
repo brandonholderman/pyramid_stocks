@@ -12,6 +12,7 @@
 <body>
     <nav>
         <a href="{{request.route_url('home')}}">Home</a>
+        {% if request.authenticated_userid %} <!--Finish code to only show full nav to authenticated user-->
         <a href="{{request.route_url('auth')}}">Login</a>
         <a href="{{request.route_url('portfolio')}}">Portfolio</a>
         <a href="{{request.route_url('add')}}">Add Stock</a>

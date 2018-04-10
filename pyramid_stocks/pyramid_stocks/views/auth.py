@@ -9,6 +9,7 @@ from . import DB_ERROR_MSG
 import requests
 import json
 
+# Add imports from demo code!! 
 
 API_URL = 'https://api.iextrading.com/1.0'
 
@@ -47,6 +48,8 @@ def auth_view(request):
                 username, password, email))
             return HTTPFound(location=request.route_url('portfolio'))
     return HTTPNotFound()
+
+    # Need to implement new methods from demo code here ^
 
 @view_config(
     route_name='portfolio',

@@ -9,6 +9,7 @@ from . import DB_ERROR_MSG
 import requests
 import json
 
+# import secuurity for home route
 
 API_URL = 'https://api.iextrading.com/1.0'
 
