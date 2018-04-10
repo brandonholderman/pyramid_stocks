@@ -19,4 +19,3 @@ class Stock(Base):
     issueType = Column(String)
     exchange = Column(String)
     description = Column(String)
-

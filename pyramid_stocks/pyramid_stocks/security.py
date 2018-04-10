@@ -15,8 +15,8 @@ class MyRoot:
     
 
 def includeme(config):
-    auth_secret = os.environ.get('AUTH_SCRET', 'it\'s a secret')
-    authz_policy = ACLAuthorizationPolicy
+    auth_secret = os.environ.get('AUTH_SECRET', 'it\'s a secret')
+    authz_policy = ACLAuthorizationPolicy()
     authn_policy = AuthTktAuthenticationPolicy(
         secret=auth_secret,
         hashalg='sha512',
@@ -25,10 +25,10 @@ def includeme(config):
     config.set_authentication_policy(authn_policy)
     config.set_authorization_policy(authz_policy)
     config.set_default_permission('secret')
-    config.set_route_factory(MyRoot)
+    config.set_root_factory(MyRoot)
 
     session_secret = os.environ.get('SESSION_SECRET', 'It\'s a secret')
     session_factory = SignedCookieSessionFactory(session_secret)
 
     config.set_session_factory(session_factory)
-    config.set_default_csrf(require_csrf=True)
+    config.set_default_csrf_options(require_csrf=True)

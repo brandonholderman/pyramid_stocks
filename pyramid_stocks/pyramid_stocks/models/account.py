@@ -10,7 +10,7 @@ from sqlalchemy import (
     Boolean,
 )
 
-manager = bcrypt.BCRYPTPasscode
+manager = bcrypt.BCRYPTPasswordManager()
 
 class Account(Base):
     __tablename__ = 'account'
@@ -18,7 +18,7 @@ class Account(Base):
     username = Column(String, unique=True, nullable=False)
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
-    registered_on = Column(DateTime, nullable=False) #default=dt.now() to attatch a created on time
+    registered_on = Column(DateTime, nullable=False)
     admin = Column(Boolean, nullable=False, default=False)
 
     def __init__(self, username, email, password, admin=False):

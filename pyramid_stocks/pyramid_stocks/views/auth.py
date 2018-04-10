@@ -1,134 +1,75 @@
-from pyramid.response import Response
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest, HTTPUnauthorized
+from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
 from pyramid.view import view_config
 from pyramid.response import Response
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest
-from ..sample_data import MOCK_DATA
 from sqlalchemy.exc import DBAPIError
 from ..models import Stock
+from ..models import Account
 from . import DB_ERROR_MSG
 import requests
-import json
+
 
 # Add imports from demo code!! 
 
 API_URL = 'https://api.iextrading.com/1.0'
 
 @view_config(
-    route_name='home',
-    renderer='../templates/base.jinja2',
-    request_method='GET')
-def index_view(request):
-    """
-    Directs user to the home template
-    """
-    return {}
-
-
-@view_config(
     route_name='auth',
-    renderer='../templates/auth.jinja2')
+    renderer='../templates/auth.jinja2',
+    permission=NO_PERMISSION_REQUIRED)
 def auth_view(request):
     """
     Directs user to authorization template and redirects to portfolio page on success
     """
-    try:
-        if request.method == 'GET':
-            username = request.GET['username']
-            password = request.GET['password']
-            print('User: {}, Pass: {}' .format(username, password))
-            return HTTPFound(location=request.route_url('portfolio'))
-    except KeyError:
-        return {}
-
     if request.method == 'POST':
+        try:
             username = request.POST['username']
             email = request.POST['email']
             password = request.POST['password']
-            print('User: {}, Pass: {}, Email: {}' .format(
-                username, password, email))
-            return HTTPFound(location=request.route_url('portfolio'))
-    return HTTPNotFound()
+            # print('User: {}, Pass: {}, Email: {}' .format(
+            #     username, password, email))
+            # return HTTPFound(location=request.route_url('portfolio'))
+        except KeyError:
+            return HTTPBadRequest()
 
-    # Need to implement new methods from demo code here ^
+        try: 
+            instance = Account(
+            username=username,
+            email=email,
+            password=password,
+            )
 
-@view_config(
-    route_name='portfolio',
-    renderer='../templates/portfolio.jinja2',
-    request_method='GET')
-def portfolio_view(request):
-    """
-    Directs user to their portfolio template
-    """
-    try:
-        query = request.dbsession.query(Stock)
-        all_entries = query.all()
-    except DBAPIError:
-        return DBAPIError(DB_ERROR_MSG, content_type='text/plain', status=500)
+            headers = remember(request, userid=instance.username)
+            request.dbsession.add(instance)
 
-    return {'data': all_entries}
-
-
-
-
-@view_config(
-    route_name='add',
-    renderer='../templates/add.jinja2',
-    request_method='GET')
-def add_view(request):
-    """
-    Directs user to the add stock template
-    """
-    # if request.method == 'POST':
-    #     fields = ['symbol', 'companyName']
-
-    #     if not all([field in request.POST for field in fields]):
-    #         return HTTPBadRequest()
-    #     try:
-
-    #         stock = {
-    #             "symbol": request.POST['symbol'],
-    #             "companyName": request.POST['companyName'],
-    #             "exchange": request.POST['exchange'],
-    #             "website": request.POST['website'],
-    #             "industry": request.POST['industry'],
-    #             "CEO": request.POST['CEO'],
-    #             "issueType": request.POST['issueType'],
-    #             "description": request.POST['description'],
-    #         }
-    #     except KeyError:
-    #         pass
-
-    #         MOCK_DATA.append(stock)
-    #         return HTTPFound(location=request.route_url('portfolio'))
-
+            return HTTPFound(location=request.route_url('portfolio'), headers=headers)
+        except DBAPIError:
+            return Response(DB_ERROR_MSG, content_type='text/plain', status=500)
+    
     if request.method == 'GET':
         try:
-            symbol = request.GET['symbol']
+            username = request.GET['username']
+            password = request.GET['password']
+            # print('User: {}, Pass: {}' .format(username, password))
+            # return HTTPFound(location=request.route_url('portfolio'))
         except KeyError:
             return {}
 
-        response = requests.get(
-            API_URL + '/stock/{}/company'.format(symbol))
-        try:
-            data = response.json()
-            return {'company': data}
-        except json.decoder.JSONDecodeError:
-            return {'err': 'Invalid '}
-    else:
-        raise HTTPNotFound()
+        is_authenticated = Account.check_credentials(request, username, password)
+        if is_authenticated[0]:
+            headers = remember(request, userid=username)
+            return HTTPFound(location=request.route_url('portfolio'), headers=headers)
+        else:
+            return HTTPUnauthorized
+    return HTTPFound(location=request.route_url('home'))
 
 
-@view_config(
-    route_name='detail',
-    renderer='../templates/detail.jinja2',
-    request_method='GET')
-def detail_view(request):
+    # Need to implement new methods from demo code here ^
+
+@view_config(route_name='logout', permission=NO_PERMISSION_REQUIRED)
+def logout(request):
     """
-    Directs user to the detail template
+    Logs user out and returns to home view
     """
-    symbol = request.matchdict['symbol']
-
-    for data in API_URL:
-        if data['symbol'] == symbol:
-            return {'data': data}
-    return {}
+    headers = forget(request)
+    return HTTPFound(location=request.route_url('home'), headers=headers)

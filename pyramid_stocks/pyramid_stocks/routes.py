@@ -8,3 +8,4 @@ def includeme(config):
     config.add_route('portfolio', '/portfolio')
     config.add_route('add', '/add')
     config.add_route('detail', '/detail/{symbol}')
+    config.add_route('logout', '/logout')
