@@ -8,9 +8,6 @@ from ..models import Account
 from . import DB_ERROR_MSG
 import requests
 
-
-# Add imports from demo code!! 
-
 API_URL = 'https://api.iextrading.com/1.0'
 
 @view_config(
@@ -26,9 +23,6 @@ def auth_view(request):
             username = request.POST['username']
             email = request.POST['email']
             password = request.POST['password']
-            # print('User: {}, Pass: {}, Email: {}' .format(
-            #     username, password, email))
-            # return HTTPFound(location=request.route_url('portfolio'))
         except KeyError:
             return HTTPBadRequest()
 
@@ -50,8 +44,6 @@ def auth_view(request):
         try:
             username = request.GET['username']
             password = request.GET['password']
-            # print('User: {}, Pass: {}' .format(username, password))
-            # return HTTPFound(location=request.route_url('portfolio'))
         except KeyError:
             return {}
 
@@ -62,9 +54,6 @@ def auth_view(request):
         else:
             return HTTPUnauthorized
     return HTTPFound(location=request.route_url('home'))
-
-
-    # Need to implement new methods from demo code here ^
 
 @view_config(route_name='logout', permission=NO_PERMISSION_REQUIRED)
 def logout(request):

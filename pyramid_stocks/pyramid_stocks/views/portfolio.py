@@ -66,17 +66,17 @@ def detail_view(request):
 @view_config(
     route_name='add',
     renderer='../templates/add.jinja2',
-    request_method='GET')
+    request_method=('POST','GET'))
 def add_view(request):
     """
     Directs user to the add stock template
     """
     if request.method == 'POST':
-        if not all([field in request.POST for field in ['title', 'body', 'date', 'author']]):
+        if not all([field in request.POST for field in ['symbol', 'companyName', 'website',
+            'industry', 'sector', 'CEO', 'issueType', 'exchange', 'description']]):
             raise HTTPBadRequest
 
         instance = Stock(
-            id=request.POST['id'],
             symbol=request.POST['symbol'],
             companyName=request.POST['companyName'],
             website=request.POST['website'],
@@ -93,22 +93,20 @@ def add_view(request):
         except DBAPIError:
             return Response(DB_ERROR_MSG, content_type='text/plain', status=500)
 
-        return HTTPFound(location=request.route_url('entries'))
+        return HTTPFound(location=request.route_url('portfolio'))
     if request.method == 'GET':
-        return {}
-    # if request.method == 'GET':
-    #     try:
-    #         symbol = request.GET['symbol']
-    #     except KeyError:
-    #         return {}
+        try:
+            symbol = request.GET['symbol']
+        except KeyError:
+            return {}
 
-    #     response = requests.get(
-    #         API_URL + '/stock/{}/company'.format(symbol))
-    #     try:
-    #         data = response.json()
-    #         return {'company': data}
-    #     except json.decoder.JSONDecodeError:
-    #         return {'err': 'Invalid '}
-    # else:
-    #     raise HTTPNotFound()
+        response = requests.get(
+            API_URL + '/stock/{}/company'.format(symbol))
+        try:
+            data = response.json()
+            return {'company': data}
+        except json.decoder.JSONDecodeError:
+            return {'err': 'Invalid Input'}
+    else:
+        raise HTTPNotFound()
 

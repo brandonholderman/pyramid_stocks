@@ -11,34 +11,33 @@
     <input type="text" name="symbol">
     <button type="submit">Search</button>
     
+</form>
+
+{% if err%}
+<h3>{{err}}</h3>
+{% endif %}
+
+{% if company%}
+<form action="{{request.route_url('add')}}" method='POST'>
+    <input type="hidden" name="csrf_token" value="{{request.session.get_csrf_token()}}" readonly>
+    <input type="hidden" name="symbol" value="{{company.symbol}}" readonly>
+    <input type="hidden" name="companyName" value="{{company.companyName}}" readonly>
+    <input type="hidden" name="exchange" value="{{company.exchange}}" readonly>
+    <input type="hidden" name="website" value="{{company.website}}" readonly>
+    <input type="hidden" name="industry" value="{{company.industry}}" readonly>
+    <input type="hidden" name="CEO" value="{{company.CEO}}" readonly>
+    <input type="hidden" name="issueType" value="{{company.issueType}}" readonly>
+    <input type="hidden" name="sector" value="{{company.sector}}" readonly>
+    <input type="hidden" name="description" value="{{company.description}}" readonly>
     <button type="submit">Add to Portfolio</button>
 </form>
 
-    {% if err%}
-    <h3>{{err}}</h3>
-    {% endif %}
-
-    <!--{% if company%}
-    <form action="{{request.route_url('portfolio')}}">
-        <input type="text" name="symbol" value{{company.symbol}} hidden readonly required>
-        <input type="text" name="companyName" value{{company.companyName}} hidden readonly required>
-        <input type="text" name="exchange" value{{company.exchange}} hidden readonly>
-        <input type="text" name="website" value{{company.website}} hidden readonly>
-        <input type="text" name="industry" value{{company.industry}} hidden readonly>
-        <input type="text" name="CEO" value{{company.CEO}} hidden readonly>
-        <input type="text" name="issueType" value{{company.issueType}} hidden readonly>
-        <input type="text" name="sector" value{{company.sector}} hidden readonly>
-        <input type="text" name="description" value{{company.description}} hidden readonly>
-    </form>
-    {% endif %}-->
-
-    {% if company%}
-    <h2>{{company.companyName}}</h2>
-    <h3>{{company.exchange}}</h3>
-    <h2>{{company.industry}}</h2>
-    <h2>{{company.description}}</h2>
-    <h2>{{company.website}}</h2>
-    <h2>{{company.CEO}}</h2>
-    {% endif %}
+<h2>{{company.companyName}}</h2>
+<h3>{{company.exchange}}</h3>
+<h2>{{company.industry}}</h2>
+<h2>{{company.description}}</h2>
+<h2>{{company.website}}</h2>
+<h2>{{company.CEO}}</h2>
+{% endif %}
 
 {% endblock content %}
