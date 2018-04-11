@@ -1,18 +1,32 @@
 import pytest
 from pyramid import testing
+from ..models.meta import Base
+from ..models import Stock
+import os
 
 @pytest.fixture
 def dummy_request():
     return testing.DummyRequest()
 
+
 @pytest.fixture
-def create_new_entry():
-    pass
+def test_entry():
+    return Stock(
+        symbol='fake',
+        companyName='some fake body of information',
+        industry='the best one',
+        website='brandon@brandon.brandon',
+        sector='9',
+        CEO='Brandon Brandon',
+        issueType='top secret',
+        exchange='usofa',
+        description='01-01-2018',
+    )
 
 @pytest.fixture
 def configuration(request):
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'postgres://localhost:5432/entries_test'
+        'sqlalchemy.url': 'postgres://localhost:5432/stock_dev'
     })
 
     config.include('pyramid_stocks.models')
@@ -21,7 +35,7 @@ def configuration(request):
     def teardown():
         testing.tearDown()
 
-    request.addfinalizers(teardown)
+    request.addfinalizer(teardown)
     return config
 
 @pytest.fixture
@@ -33,11 +47,27 @@ def db_session(configuration, request):
 
     def teardown():
         session.transaction.rollback()
-        base.metadata.drop_all(engine)
+        Base.metadata.drop_all(engine)
 
-    request.addfinalizers(teardown)
+    request.addfinalizer(teardown)
     return session
+
+
+@pytest.fixture
+def test_entry():
+    return Stock(
+        symbol='fake',
+        companyName='some fake body of information',
+        industry='the best one',
+        website='brandon@brandon.brandon',
+        sector='9',
+        CEO='Brandon Brandon',
+        issueType='top secret',
+        exchange='usofa',
+        description='01-01-2018',
+    )
 
 @pytest.fixture
 def dummy_request(db_session):
-    pass
+    """Create a dummy GET request with a dbsession."""
+    return testing.DummyRequest(dbsession=db_session)

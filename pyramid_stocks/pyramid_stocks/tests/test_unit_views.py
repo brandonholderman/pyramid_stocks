@@ -1,81 +1,93 @@
-# import unittest
-# import transaction
+def test_default_response_portfolio_view(dummy_request):
+    from ..views.portfolio import portfolio_view
 
-# from pyramid import testing
-
-
-# def dummy_request(dbsession):
-#     return testing.DummyRequest(dbsession=dbsession)
+    response = portfolio_view(dummy_request)
+    assert isinstance(response, dict)
+    assert response['data'] == []
 
 
-# class BaseTest(unittest.TestCase):
-#     def setUp(self):
-#         self.config = testing.setUp(settings={
-#             'sqlalchemy.url': 'sqlite:///:memory:'
-#         })
-#         self.config.include('.models')
-#         settings = self.config.get_settings()
+# def test_default_detail_view(dummy_request, db_session, test_entry):
+#     from ..views.portfolio import detail_view
 
-#         from .models import (
-#             get_engine,
-#             get_session_factory,
-#             get_tm_session,
-#             )
+#     db_session.add(test_entry)
 
-#         self.engine = get_engine(settings)
-#         session_factory = get_session_factory(self.engine)
-
-#         self.session = get_tm_session(session_factory, transaction.manager)
-
-#     def init_database(self):
-#         from .models.meta import Base
-#         Base.metadata.create_all(self.engine)
-
-#     def tearDown(self):
-#         from .models.meta import Base
-
-#         testing.tearDown()
-#         transaction.abort()
-#         Base.metadata.drop_all(self.engine)
+#     dummy_request.matchdict = {'symbol': 'fake'}
+#     response = detail_view(dummy_request)
+#     assert response['data'].symbol == 'fake'
 
 
-# class TestMyViewSuccessCondition(BaseTest):
+def test_detail_not_found(dummy_request):
+    from ..views.portfolio import detail_view
+    from pyramid.httpexceptions import HTTPNotFound
 
-#     def setUp(self):
-#         super(TestMyViewSuccessCondition, self).setUp()
-#         self.init_database()
+    response = detail_view(dummy_request)
+    assert isinstance(response, HTTPNotFound)
 
-#         from .models import MyModel
+def test_default_response_new_view(dummy_request):
+    from ..views.portfolio import add_view
 
-#         model = MyModel(name='one', value=55)
-#         self.session.add(model)
-
-#     def test_passing_view(self):
-#         from .views.default import my_view
-#         info = my_view(dummy_request(self.session))
-#         self.assertEqual(info['one'].name, 'one')
-#         self.assertEqual(info['project'], 'pyramid_stocks')
+    response = add_view(dummy_request)
+    assert len(response) == 0
+    assert type(response) == dict
 
 
-# class TestMyViewFailureCondition(BaseTest):
+def test_valid_post_to_new_view(dummy_request):
+    from ..views.portfolio import add_view
+    from pyramid.httpexceptions import HTTPFound
 
-#     def test_failing_view(self):
-#         from .views.default import my_view
-#         info = my_view(dummy_request(self.session))
-#         self.assertEqual(info.status_int, 500)
+    dummy_request.method = 'POST'
+    dummy_request.POST = {
+        'symbol': 'fake',
+        'companyName': 'some fake body of information',
+        'industry': 'the best one',
+        'website': 'brandon@brandon.brandon',
+        'sector': '9',
+        'CEO': 'Brandon Brandon',
+        'issueType': 'top secret',
+        'exchange': 'usofa',
+        'description': '01-01-2018',
+    }
 
-def test_default_behavior_of_base_route(dummy_request):
-    from ..views.default import index_view
-    from pyramid.response import Response
-
-    request = dummy_request
-    response = index_view(request)
-    assert isinstance(response, Response)
-    assert response.text == 'I did a thing'
+    response = add_view(dummy_request)
+    assert response.status_code == 302
+    assert isinstance(response, HTTPFound)
 
 
-# def test_default_behavior_of_entries_views(dummy_request):
-#     from ..views.default import entries.view
+def test_valid_post_to_new_view_adds_record_to_db(dummy_request, db_session):
+    from ..views.portfolio import add_view
+    from ..models import Stock
 
-#     response = entries_view(dummy_request)
-#     assert type(response) == dict
+    dummy_request.method = 'POST'
+    dummy_request.POST = {
+        'symbol': 'fake',
+        'companyName': 'fake',
+        'industry': 'the best one',
+        'website': 'brandon@brandon.brandon',
+        'sector': '9',
+        'CEO': 'Brandon Brandon',
+        'issueType': 'top secret',
+        'exchange': 'usofa',
+        'description': '01-01-2018',
+    }
+
+    # assert right here that there's nothing in the DB
+
+    add_view(dummy_request)
+    query = db_session.query(Stock)
+    one = query.first()
+    assert one.symbol == 'fake'
+    assert one.companyName == 'fake'
+    assert type(one.symbol) == str
+
+
+def test_invalid_post_to_new_view(dummy_request):
+    import pytest
+    from ..views.portfolio import add_view
+    from pyramid.httpexceptions import HTTPBadRequest
+
+    dummy_request.method = 'POST'
+    dummy_request.POST = {}
+
+    with pytest.raises(HTTPBadRequest):
+        response = add_view(dummy_request)
+        assert isinstance(response, HTTPBadRequest)
