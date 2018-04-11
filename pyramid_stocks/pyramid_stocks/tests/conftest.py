@@ -26,7 +26,7 @@ def test_entry():
 @pytest.fixture
 def configuration(request):
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'postgres://localhost:5432/stock_dev'
+        'sqlalchemy.url': 'postgres://localhost:5432/stock_test'
     })
 
     config.include('pyramid_stocks.models')
@@ -51,21 +51,6 @@ def db_session(configuration, request):
 
     request.addfinalizer(teardown)
     return session
-
-
-@pytest.fixture
-def test_entry():
-    return Stock(
-        symbol='fake',
-        companyName='some fake body of information',
-        industry='the best one',
-        website='brandon@brandon.brandon',
-        sector='9',
-        CEO='Brandon Brandon',
-        issueType='top secret',
-        exchange='usofa',
-        description='01-01-2018',
-    )
 
 @pytest.fixture
 def dummy_request(db_session):

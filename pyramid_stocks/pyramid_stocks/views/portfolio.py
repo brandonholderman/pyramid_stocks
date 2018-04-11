@@ -21,11 +21,11 @@ def portfolio_view(request):
     """
     try:
         query = request.dbsession.query(Stock)
-        all_entries = query.all()
+        user_entries = query.filter(Stock.account_id == request.authenticated_userid)
     except DBAPIError:
         return DBAPIError(DB_ERROR_MSG, content_type='text/plain', status=500)
 
-    return {'data': all_entries}
+    return {'data': user_entries}
 
 
 @view_config(
@@ -43,20 +43,24 @@ def detail_view(request):
 
     try:
         query = request.dbsession(Stock)
-        stock_detail = query.filter(Stock.symbol == symbol).first()
+        stock_detail = query.filter(Stock.account_id == request.authenticated_userid).filter(
+            Stock.symbol == symbol).one_or_none()
     except DBAPIError:
         return Response(DB_ERROR_MSG, content_type='text/plain', status=500)
 
+    if stock_detail is None:
+        raise HTTPNotFound()
+
     res = request.get('https://pixabay.com/api?key={}&q={}'.format(API_KEY, stock_detail.title.split(' ')[0]))
 
-    try:
-        url=res.json()['hits'][0]['webformatURL']
-    except (KeyError, IndexError):
-        url='https://via.placeholder.com/300x300'
-    return {
-        "entry": stock_detail,
-        "img": url,
-    }
+    # try:
+    #     url=res.json()['hits'][0]['webformatURL']
+    # except (KeyError, IndexError):
+    #     url='https://via.placeholder.com/300x300'
+    # return {
+    #     "entry": stock_detail,
+    #     "img": url,
+    # }
 
         # for data in API_URL:
         #     if data['symbol'] == symbol:
@@ -77,6 +81,7 @@ def add_view(request):
             raise HTTPBadRequest
 
         instance = Stock(
+            account_id=request.authenticated_userid,
             symbol=request.POST['symbol'],
             companyName=request.POST['companyName'],
             website=request.POST['website'],

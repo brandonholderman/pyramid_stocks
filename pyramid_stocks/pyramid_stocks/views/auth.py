@@ -1,8 +1,8 @@
-from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest, HTTPUnauthorized
+from pyramid.httpexceptions import HTTPFound, HTTPNotFound, HTTPBadRequest, HTTPUnauthorized, HTTPConflict
 from pyramid.security import NO_PERMISSION_REQUIRED, remember, forget
 from pyramid.view import view_config
 from pyramid.response import Response
-from sqlalchemy.exc import DBAPIError
+from sqlalchemy.exc import DBAPIError, IntegrityError
 from ..models import Stock
 from ..models import Account
 from . import DB_ERROR_MSG
@@ -34,7 +34,11 @@ def auth_view(request):
             )
 
             headers = remember(request, userid=instance.username)
-            request.dbsession.add(instance)
+            try:
+                request.dbsession.add(instance)
+                request.dbsession.flush()
+            except IntegrityError:
+                return HTTPConflict
 
             return HTTPFound(location=request.route_url('portfolio'), headers=headers)
         except DBAPIError:
