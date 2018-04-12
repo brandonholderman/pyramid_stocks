@@ -43,8 +43,8 @@ def detail_view(request):
         return HTTPNotFound()
 
     try:
-        query = request.dbsession(Stock)
-        stock_detail = query.filter(Stock.account_id == request.authenticated_userid).filter(
+        query = request.dbsession(Account)
+        stock_detail = query.filter(Account.username == request.authenticated_userid).filter(
             Stock.symbol == symbol).one_or_none()
     except DBAPIError:
         return Response(DB_ERROR_MSG, content_type='text/plain', status=500)
@@ -52,7 +52,7 @@ def detail_view(request):
     if stock_detail is None:
         raise HTTPNotFound()
 
-    res = request.get('https://pixabay.com/api?key={}&q={}'.format(API_KEY, stock_detail.title.split(' ')[0]))
+    # res = request.get('https://pixabay.com/api?key={}&q={}'.format(API_KEY, stock_detail.title.split(' ')[0]))
 
     # try:
     #     url=res.json()['hits'][0]['webformatURL']
@@ -82,6 +82,7 @@ def add_view(request):
             raise HTTPBadRequest
 
         instance = request.dbsession.query(Stock).filter(Stock.symbol == request.POST['symbol']).first()
+
         query = request.dbsession.query(Account)
         current_user = query.filter(Account.username == request.authenticated_userid).first()
         
