@@ -3,6 +3,7 @@ from pyramid.response import Response
 from pyramid.view import view_config
 from sqlalchemy.exc import DBAPIError
 from ..models import Stock
+from ..models import Account
 from . import DB_ERROR_MSG
 import requests
 import json
@@ -20,12 +21,12 @@ def portfolio_view(request):
     Directs user to their portfolio template
     """
     try:
-        query = request.dbsession.query(Stock)
-        user_entries = query.filter(Stock.account_id == request.authenticated_userid)
+        query = request.dbsession.query(Account)
+        current_account = query.filter(Account.username == request.authenticated_userid).first()
     except DBAPIError:
         return DBAPIError(DB_ERROR_MSG, content_type='text/plain', status=500)
 
-    return {'data': user_entries}
+    return {'data': current_account.stocks}
 
 
 @view_config(
@@ -80,23 +81,26 @@ def add_view(request):
             'industry', 'sector', 'CEO', 'issueType', 'exchange', 'description']]):
             raise HTTPBadRequest
 
-        instance = Stock(
-            account_id=request.authenticated_userid,
-            symbol=request.POST['symbol'],
-            companyName=request.POST['companyName'],
-            website=request.POST['website'],
-            industry=request.POST['industry'],
-            sector=request.POST['sector'],
-            CEO=request.POST['CEO'],
-            issueType=request.POST['issueType'],
-            exchange=request.POST['exchange'],
-            description=request.POST['description'],
-        )
+        instance = request.dbsession.query(Stock).filter(Stock.symbol == request.POST['symbol']).first()
+        query = request.dbsession.query(Account)
+        current_user = query.filter(Account.username == request.authenticated_userid).first()
+        
+        if instance is None:
+            instance = Stock(
+                symbol=request.POST['symbol'],
+                companyName=request.POST['companyName'],
+                website=request.POST['website'],
+                industry=request.POST['industry'],
+                sector=request.POST['sector'],
+                CEO=request.POST['CEO'],
+                issueType=request.POST['issueType'],
+                exchange=request.POST['exchange'],
+                description=request.POST['description'],
+            )
 
-        try:
             request.dbsession.add(instance)
-        except DBAPIError:
-            return Response(DB_ERROR_MSG, content_type='text/plain', status=500)
+
+        current_user.stocks.append(instance)
 
         return HTTPFound(location=request.route_url('portfolio'))
     if request.method == 'GET':
