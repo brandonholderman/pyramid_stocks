@@ -5,11 +5,6 @@ from ..models import Stock
 import os
 
 @pytest.fixture
-def dummy_request():
-    return testing.DummyRequest()
-
-
-@pytest.fixture
 def test_entry():
     return Stock(
         symbol='fake',
