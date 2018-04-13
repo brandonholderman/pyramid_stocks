@@ -5,11 +5,6 @@ from ..models import Stock
 import os
 
 @pytest.fixture
-def dummy_request():
-    return testing.DummyRequest()
-
-
-@pytest.fixture
 def test_entry():
     return Stock(
         symbol='fake',
@@ -26,7 +21,7 @@ def test_entry():
 @pytest.fixture
 def configuration(request):
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'postgres://localhost:5432/stock_test'
+        'sqlalchemy.url': os.environ.get('TEST_DATABASE_URL')
     })
 
     config.include('pyramid_stocks.models')
