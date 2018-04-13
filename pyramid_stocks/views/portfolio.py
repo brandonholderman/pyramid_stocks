@@ -12,6 +12,7 @@ import os
 API_URL = 'https://api.iextrading.com/1.0'
 API_KEY = os.environ.get('API_KEY', '')
 
+
 @view_config(
     route_name='portfolio',
     renderer='../templates/portfolio.jinja2',
@@ -68,26 +69,32 @@ def detail_view(request):
         #         return {'data': data}
         # return {}
 
+
 @view_config(
     route_name='add',
     renderer='../templates/add.jinja2',
-    request_method=('POST','GET'))
+    request_method=('POST', 'GET'))
 def add_view(request):
     """
     Directs user to the add stock template
     """
     if request.method == 'POST':
-        if not all([field in request.POST for field in ['symbol', 'companyName', 'website',
-            'industry', 'sector', 'CEO', 'issueType', 'exchange', 'description']]):
+        if not all([field in request.POST for field in ['symbol', 
+                    'companyName', 'website', 'industry', 'sector', 'CEO', 
+                                                        'issueType', 'exchange', 
+                                                        'description']]):
             raise HTTPBadRequest
 
-        instance = request.dbsession.query(Stock).filter(Stock.symbol == request.POST['symbol']).first()
+        stock_query = request.dbsession.query(Stock)
+        stock_instance = stock_query.filter(Stock.symbol ==
+                                            request.POST['symbol']).first()
 
         query = request.dbsession.query(Account)
-        current_user = query.filter(Account.username == request.authenticated_userid).first()
-        
-        if instance is None:
-            instance = Stock(
+        current_user = query.filter(Account.username ==
+                                    request.authenticated_userid).first()
+
+        if stock_instance is None:
+            stock_instance = Stock(
                 symbol=request.POST['symbol'],
                 companyName=request.POST['companyName'],
                 website=request.POST['website'],
@@ -99,9 +106,9 @@ def add_view(request):
                 description=request.POST['description'],
             )
 
-            request.dbsession.add(instance)
+            request.dbsession.add(stock_instance)
 
-        current_user.stocks.append(instance)
+        current_user.stocks.append(stock_instance)
 
         return HTTPFound(location=request.route_url('portfolio'))
     if request.method == 'GET':

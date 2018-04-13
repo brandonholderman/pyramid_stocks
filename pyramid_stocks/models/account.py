@@ -14,6 +14,7 @@ from sqlalchemy import (
 
 manager = bcrypt.BCRYPTPasswordManager()
 
+
 class Account(Base):
     __tablename__ = 'account'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -38,9 +39,10 @@ class Account(Base):
 
         is_authenticated = False
 
-        query = request.dbsession.query(cls).filter(cls.username == username).one_or_none()
+        query = request.dbsession.query(cls)
+        instance = query.filter(cls.username == username).one_or_none()
         
-        if query is not None:
-            if manager.check(query.password, password):
+        if instance is not None:
+            if manager.check(instance.password, password):
                 is_authenticated = True
         return (is_authenticated, username)
