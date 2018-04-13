@@ -26,7 +26,7 @@ def test_entry():
 @pytest.fixture
 def configuration(request):
     config = testing.setUp(settings={
-        'sqlalchemy.url': 'postgres://localhost:5432/stock_test'
+        'sqlalchemy.url': os.environ.get('TEST_DATABASE_URL')
     })
 
     config.include('pyramid_stocks.models')
