@@ -45,29 +45,13 @@ def detail_view(request):
 
     try:
         query = request.dbsession(Account)
-        stock_detail = query.filter(Account.username == request.authenticated_userid).filter(
-            Stock.symbol == symbol).one_or_none()
+        authenticated_detail = query.filter(Account.username == request.authenticated_userid)
+        stock_detail = authenticated_detail.filter(Stock.symbol == symbol).one_or_none()
     except DBAPIError:
         return Response(DB_ERROR_MSG, content_type='text/plain', status=500)
 
     if stock_detail is None:
         raise HTTPNotFound()
-
-    # res = request.get('https://pixabay.com/api?key={}&q={}'.format(API_KEY, stock_detail.title.split(' ')[0]))
-
-    # try:
-    #     url=res.json()['hits'][0]['webformatURL']
-    # except (KeyError, IndexError):
-    #     url='https://via.placeholder.com/300x300'
-    # return {
-    #     "entry": stock_detail,
-    #     "img": url,
-    # }
-
-        # for data in API_URL:
-        #     if data['symbol'] == symbol:
-        #         return {'data': data}
-        # return {}
 
 
 @view_config(
@@ -79,9 +63,9 @@ def add_view(request):
     Directs user to the add stock template
     """
     if request.method == 'POST':
-        if not all([field in request.POST for field in ['symbol', 
-                    'companyName', 'website', 'industry', 'sector', 'CEO', 
-                                                        'issueType', 'exchange', 
+        if not all([field in request.POST for field in ['symbol',
+                    'companyName', 'website', 'industry', 'sector', 'CEO',
+                                                        'issueType', 'exchange',
                                                         'description']]):
             raise HTTPBadRequest
 
@@ -126,4 +110,3 @@ def add_view(request):
             return {'err': 'Invalid Input'}
     else:
         raise HTTPNotFound()
-
