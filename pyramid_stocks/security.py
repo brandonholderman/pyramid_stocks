@@ -4,6 +4,7 @@ from pyramid.session import SignedCookieSessionFactory
 from pyramid.authentication import AuthTktAuthenticationPolicy
 from pyramid.authorization import ACLAuthorizationPolicy
 
+
 class MyRoot:
     def __init__(self, request):
         self.request = request
@@ -12,7 +13,7 @@ class MyRoot:
         (Allow, Everyone, 'view'),
         (Allow, Authenticated, 'secret'),
     ]
-    
+
 
 def includeme(config):
     auth_secret = os.environ.get('AUTH_SECRET', 'it\'s a secret')

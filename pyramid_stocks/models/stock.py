@@ -10,8 +10,9 @@ from sqlalchemy import (
 
 from .meta import Base
 
+
 class Stock(Base):
-    __tablename__= 'stock'
+    __tablename__='stock'
     id = Column(Integer, primary_key=True)
     symbol = Column(String, nullable=False)
     companyName = Column(String, nullable=False, unique=True)

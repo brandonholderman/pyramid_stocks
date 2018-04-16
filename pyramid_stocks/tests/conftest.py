@@ -4,6 +4,7 @@ from ..models.meta import Base
 from ..models import Stock
 import os
 
+
 @pytest.fixture
 def test_entry():
     return Stock(
@@ -17,6 +18,7 @@ def test_entry():
         exchange='usofa',
         description='01-01-2018',
     )
+
 
 @pytest.fixture
 def configuration(request):
@@ -33,6 +35,7 @@ def configuration(request):
     request.addfinalizer(teardown)
     return config
 
+
 @pytest.fixture
 def db_session(configuration, request):
     SessionFactory = configuration.registry['dbsession_factory']
@@ -46,6 +49,7 @@ def db_session(configuration, request):
 
     request.addfinalizer(teardown)
     return session
+
 
 @pytest.fixture
 def dummy_request(db_session):

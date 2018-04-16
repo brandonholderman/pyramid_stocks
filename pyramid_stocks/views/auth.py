@@ -6,9 +6,10 @@ from sqlalchemy.exc import DBAPIError, IntegrityError
 from ..models import Stock
 from ..models import Account
 from . import DB_ERROR_MSG
-import requests
+# import requests
 
 API_URL = 'https://api.iextrading.com/1.0'
+
 
 @view_config(
     route_name='auth',
@@ -26,11 +27,11 @@ def auth_view(request):
         except KeyError:
             return HTTPBadRequest()
 
-        try: 
+        try:
             instance = Account(
-            username=username,
-            email=email,
-            password=password,
+                username=username,
+                email=email,
+                password=password,
             )
 
             headers = remember(request, userid=instance.username)

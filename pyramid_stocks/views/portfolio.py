@@ -12,6 +12,7 @@ import os
 API_URL = 'https://api.iextrading.com/1.0'
 API_KEY = os.environ.get('API_KEY', '')
 
+
 @view_config(
     route_name='portfolio',
     renderer='../templates/portfolio.jinja2',
@@ -44,50 +45,40 @@ def detail_view(request):
 
     try:
         query = request.dbsession(Account)
-        stock_detail = query.filter(Account.username == request.authenticated_userid).filter(
-            Stock.symbol == symbol).one_or_none()
+        authenticated_detail = query.filter(Account.username == request.authenticated_userid)
+        stock_detail = authenticated_detail.filter(Stock.symbol == symbol).one_or_none()
     except DBAPIError:
         return Response(DB_ERROR_MSG, content_type='text/plain', status=500)
 
     if stock_detail is None:
         raise HTTPNotFound()
 
-    # res = request.get('https://pixabay.com/api?key={}&q={}'.format(API_KEY, stock_detail.title.split(' ')[0]))
-
-    # try:
-    #     url=res.json()['hits'][0]['webformatURL']
-    # except (KeyError, IndexError):
-    #     url='https://via.placeholder.com/300x300'
-    # return {
-    #     "entry": stock_detail,
-    #     "img": url,
-    # }
-
-        # for data in API_URL:
-        #     if data['symbol'] == symbol:
-        #         return {'data': data}
-        # return {}
 
 @view_config(
     route_name='add',
     renderer='../templates/add.jinja2',
-    request_method=('POST','GET'))
+    request_method=('POST', 'GET'))
 def add_view(request):
     """
     Directs user to the add stock template
     """
     if request.method == 'POST':
-        if not all([field in request.POST for field in ['symbol', 'companyName', 'website',
-            'industry', 'sector', 'CEO', 'issueType', 'exchange', 'description']]):
+        if not all([field in request.POST for field in ['symbol',
+                    'companyName', 'website', 'industry', 'sector', 'CEO',
+                                                        'issueType', 'exchange',
+                                                        'description']]):
             raise HTTPBadRequest
 
-        instance = request.dbsession.query(Stock).filter(Stock.symbol == request.POST['symbol']).first()
+        stock_query = request.dbsession.query(Stock)
+        stock_instance = stock_query.filter(Stock.symbol ==
+                                            request.POST['symbol']).first()
 
         query = request.dbsession.query(Account)
-        current_user = query.filter(Account.username == request.authenticated_userid).first()
-        
-        if instance is None:
-            instance = Stock(
+        current_user = query.filter(Account.username ==
+                                    request.authenticated_userid).first()
+
+        if stock_instance is None:
+            stock_instance = Stock(
                 symbol=request.POST['symbol'],
                 companyName=request.POST['companyName'],
                 website=request.POST['website'],
@@ -99,9 +90,9 @@ def add_view(request):
                 description=request.POST['description'],
             )
 
-            request.dbsession.add(instance)
+            request.dbsession.add(stock_instance)
 
-        current_user.stocks.append(instance)
+        current_user.stocks.append(stock_instance)
 
         return HTTPFound(location=request.route_url('portfolio'))
     if request.method == 'GET':
@@ -119,4 +110,3 @@ def add_view(request):
             return {'err': 'Invalid Input'}
     else:
         raise HTTPNotFound()
-
