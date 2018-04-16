@@ -10,7 +10,7 @@ from sqlalchemy import (
     Boolean,
 )
 
-manager = bcrypt.BCRYPTPasscode
+manager = bcrypt.BCRYPTPasswordManager()
 
 
 class Account(Base):

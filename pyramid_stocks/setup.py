@@ -57,7 +57,7 @@ setup(
             'main = pyramid_stocks:main',
         ],
         'console_scripts': [
-            'initialize_pyramid_stocks_db = pyramid_stocks.scripts.initializedb:main',
+            'initialize_db = pyramid_stocks.scripts.initializedb:main',
         ],
     },
 )
