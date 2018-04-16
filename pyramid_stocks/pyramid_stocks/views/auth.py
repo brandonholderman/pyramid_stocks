@@ -13,6 +13,7 @@ import json
 
 API_URL = 'https://api.iextrading.com/1.0'
 
+
 @view_config(
     route_name='home',
     renderer='../templates/base.jinja2',
@@ -51,6 +52,7 @@ def auth_view(request):
 
     # Need to implement new methods from demo code here ^
 
+
 @view_config(
     route_name='portfolio',
     renderer='../templates/portfolio.jinja2',
@@ -66,8 +68,6 @@ def portfolio_view(request):
         return DBAPIError(DB_ERROR_MSG, content_type='text/plain', status=500)
 
     return {'data': all_entries}
-
-
 
 
 @view_config(

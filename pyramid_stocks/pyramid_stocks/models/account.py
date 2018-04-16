@@ -12,13 +12,14 @@ from sqlalchemy import (
 
 manager = bcrypt.BCRYPTPasscode
 
+
 class Account(Base):
     __tablename__ = 'account'
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String, unique=True, nullable=False)
     email = Column(String, nullable=False)
     password = Column(String, nullable=False)
-    registered_on = Column(DateTime, nullable=False) #default=dt.now() to attatch a created on time
+    registered_on = Column(DateTime, nullable=False)
     admin = Column(Boolean, nullable=False, default=False)
 
     def __init__(self, username, email, password, admin=False):
@@ -36,7 +37,7 @@ class Account(Base):
         is_authenticated = False
 
         query = request.dbsession.query(cls).filter(cls.username == username).one_or_none()
-        
+
         if query is not None:
             if manager.check(query.password, password):
                 is_authenticated = True

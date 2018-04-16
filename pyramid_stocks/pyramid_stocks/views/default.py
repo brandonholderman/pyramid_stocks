@@ -13,24 +13,25 @@ import json
 
 API_URL = 'https://api.iextrading.com/1.0'
 
-"""
-Directs user to the home template
-"""
+
 @view_config(
-route_name='home', 
-renderer='../templates/base.jinja2', 
-request_method='GET')
+    route_name='home',
+    renderer='../templates/base.jinja2',
+    request_method='GET')
 def index_view(request):
+    """
+    Directs user to the home template
+    """
     return {}
 
 
-"""
-Directs user to authorization template and redirects to portfolio page on success
-"""
 @view_config(
-route_name='auth', 
-renderer='../templates/auth.jinja2')
+    route_name='auth',
+    renderer='../templates/auth.jinja2')
 def auth_view(request):
+    """
+    Directs user to authorization template and redirects to portfolio page on success
+    """
     try:
         if request.method == 'GET':
             username = request.GET['username']
@@ -39,7 +40,7 @@ def auth_view(request):
             return HTTPFound(location=request.route_url('portfolio'))
     except KeyError:
         return {}
-    
+
     if request.method == 'POST':
             username = request.POST['username']
             email = request.POST['email']
@@ -48,14 +49,15 @@ def auth_view(request):
             return HTTPFound(location=request.route_url('portfolio'))
     return HTTPNotFound()
 
-"""
-Directs user to their portfolio template
-"""
+
 @view_config(
-route_name='portfolio', 
-renderer='../templates/portfolio.jinja2', 
-request_method='GET')
+    route_name='portfolio', 
+    renderer='../templates/portfolio.jinja2', 
+    request_method='GET')
 def portfolio_view(request):
+    """
+    Directs user to their portfolio template
+    """
     try:
         query = request.dbsession.query(Stock)
         all_entries = query.all()
@@ -65,14 +67,14 @@ def portfolio_view(request):
     return {'data': all_entries}
 
 
-"""
-Directs user to the add stock template
-"""
 @view_config(
-route_name='add', 
-renderer='../templates/add.jinja2', 
-request_method='GET')
+    route_name='add', 
+    renderer='../templates/add.jinja2', 
+    request_method='GET')
 def add_view(request):
+    """
+    Directs user to the add stock template
+    """
     # if request.method == 'POST':
     #     fields = ['symbol', 'companyName']
 
@@ -96,29 +98,30 @@ def add_view(request):
     #         MOCK_DATA.append(stock)
     #         return HTTPFound(location=request.route_url('portfolio'))
 
-        if request.method == 'GET':
-            try:
-                symbol = request.GET['symbol']
-            except KeyError:
-                return {}
+    if request.method == 'GET':
+        try:
+            symbol = request.GET['symbol']
+        except KeyError:
+            return {}
 
-            response = requests.get(API_URL + '/stock/{}/company'.format(symbol))
-            try:
-                data = response.json()
-                return {'company': data}
-            except json.decoder.JSONDecodeError:
-                return {'err': 'Invalid '}
-        else:
-            raise HTTPNotFound()
+        response = requests.get(API_URL + '/stock/{}/company'.format(symbol))
+        try:
+            data = response.json()
+            return {'company': data}
+        except json.decoder.JSONDecodeError:
+            return {'err': 'Invalid '}
+    else:
+        raise HTTPNotFound()
 
-"""
-Directs user to the detail template
-"""
+
 @view_config(
-route_name='detail', 
-renderer='../templates/detail.jinja2', 
-request_method='GET')
+    route_name='detail', 
+    renderer='../templates/detail.jinja2', 
+    request_method='GET')
 def detail_view(request):
+    """
+    Directs user to the detail template
+    """
     symbol = request.matchdict['symbol']
 
     for data in API_URL:
